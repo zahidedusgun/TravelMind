@@ -19,10 +19,6 @@ app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
-app.get("/about", (req, res) => {
-  res.send("This is the about page");
-});
-
 app.post('/chat', async (req, res) => {
     try {
         const completion = await openai.chat.completions.create({
@@ -47,6 +43,7 @@ app.post('/chat', async (req, res) => {
         res.status(500).json({ error: "An error occurred" });
     }
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
