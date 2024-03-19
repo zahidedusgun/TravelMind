@@ -34,16 +34,14 @@ app.post('/chat', async (req, res) => {
                 }
             ],
         });
-        console.log("burası",completion.choices[0].message.content);
-   
-        
-        res.send(completion.choices[0].message.content);
+        const advices = completion.choices[0].message.content;
+        console.log(advices);
+        res.send(advices);
     } catch (error) {
         console.error("An error occurred:", error);
         res.status(500).json({ error: "An error occurred" });
     }
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
