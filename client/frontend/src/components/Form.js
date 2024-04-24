@@ -4,9 +4,6 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
 
 const purposes = [
   {
@@ -174,34 +171,6 @@ export default function Form({onSubmit}) {
             </Grid>
           </Box>
         </Grid>
-        {error && (
-          <div>
-            <h1>Could not reach the city infos.</h1>
-          </div>
-        )}
-        {advices.length >= 0 && (
-          <Box>
-            {advices.map(({advice}, index) => (
-              <Grid item key={index} xs={6}>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {advice.days[0].history}
-                    </Typography>
-
-                    <hr />
-                    <br />
-                    <Typography variant="body2" color="text.secondary">
-                      Lizards are a widespread group of squamate reptiles, with
-                      over 6,000 species, ranging across all continents except
-                      Antarctica
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Box>
-        )}
       </Grid>
 
       <Grid>

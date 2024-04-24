@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css");
+
+:root {
+  --primary: #963e1b;
+  --secondary: #fffbf4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 10px;
+  padding: 0;
+  color: white;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  background: var(--secondary);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  padding-bottom: 5px;
+  border-bottom: 3px solid var(--primary);
+}
+
+header nav a {
+  text-decoration: none;
+  padding: 9px;
+  border-radius: 30px;
+  margin: 0 5px;
+  font-size: 15px;
+}
+
+nav a.active {
+  background: var(--primary);
+}
+
+p {
+  margin: 20px 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+main {
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.main-layout header {
+  display: flex;
+  justify-content: space-between; /* Adjust content to space-between */
+  align-items: center;
+  background-color: #402a4b;
+  color: white;
+  padding: 20px;
+  border-radius: 50px;
+  height: 80px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+header img {
+  text-align: center;
+}
+
+header nav {
+  flex: auto;
+}
