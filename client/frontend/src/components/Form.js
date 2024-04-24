@@ -25,7 +25,7 @@ const purposes = [
 
 const numbers = Array.from({ length: 6 }, (_, index) => index);
 
-export default function Form() {
+export default function Form({onSubmit}) {
   const [loading, setLoading] = React.useState(false);
   const [advices, setAdvices] = React.useState([]);
   const [error, setError] = React.useState(false);
@@ -49,6 +49,8 @@ export default function Form() {
 
   const submitHandle = (e) => {
     e.preventDefault();
+    setLoading(true);
+    onSubmit();
     fetch("http://localhost:5000/chat", {
       method: "POST",
       headers: {
@@ -64,11 +66,10 @@ export default function Form() {
         } else {
           setAdvices(res);
           setError(false);
+          console.log(advices);
         }
       })
       .finally(() => setLoading(false));
-    console.log(data);
-    console.log(advices.days[0].history);
   };
 
   return (
@@ -80,6 +81,7 @@ export default function Form() {
             noValidate
             autoComplete="off"
             sx={{ paddingRight: "10px" }}
+            onSubmit={submitHandle}
           >
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -200,6 +202,33 @@ export default function Form() {
             ))}
           </Box>
         )}
+      </Grid>
+
+      <Grid>
+        <Box>
+          {advices && advices.info}
+          <Box>
+            {advices &&
+              advices.info &&
+              advices.info.map((info, infoIndex) => (
+                <div key={infoIndex}>
+                  <p>{info}</p>
+                  {advices.option.map((option, optionIndex) => (
+                    <div key={optionIndex}>
+                      <p>Option: {option.option}</p>
+                      <p>Otel: {option.otel}</p>
+                      <p>Kahve: {option.kahve}</p>
+                      <p>Kahve Posta Kodu: {option.kahvePostcode}</p>
+                      <p>History: {option.history}</p>
+                      <p>History Posta Kodu: {option.historyPostcode}</p>
+                      <p>Müze: {option.museum}</p>
+                      <p>Müze Posta Kodu: {option.museumPostcode}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </Box>
+        </Box>
       </Grid>
     </Box>
   );
