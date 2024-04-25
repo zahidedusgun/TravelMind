@@ -34,14 +34,35 @@ app.post('/chat', async (req, res) => {
                 }
             ],
         });
-        const advices = completion.choices[0].message.content;
-        console.log(advices);
+        let advices = completion.choices[0].message.content;
+        advices = JSON.parse(advices);
+        console.log(advices.info);
         res.send(advices);
     } catch (error) {
         console.error("An error occurred:", error);
         res.status(500).json({ error: "An error occurred" });
     }
 });
+
+app.get('/chat', (req, res) => {
+    const country = req.query.country;
+    const city = req.query.city;
+    const days = req.query.days;
+    const purpose = req.query.purpose;
+    const kids = req.query.kids;
+
+    console.log("Received data:");
+    console.log("Country:", country);
+    console.log("City:", city);
+    console.log("Days:", days);
+    console.log("Purpose:", purpose);
+    console.log("Kids:", kids);
+
+    
+    res.send("Received data successfully");
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
