@@ -75,3 +75,7 @@ header img {
 header nav {
   flex: auto;
 }
+.MuiCardOverflow-root.MuiCardOverflow-variantSolid.MuiCardOverflow-colorPrimary.css-d7trsz-JoyCardOverflow-root {
+  background-color: #402a4b;
+  color: white; /* Metin rengi */
+}

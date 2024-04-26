@@ -38,6 +38,7 @@ app.post('/chat', async (req, res) => {
         advices = JSON.parse(advices);
         console.log(advices.info);
         res.send(advices);
+        console.log(advices);
     } catch (error) {
         console.error("An error occurred:", error);
         res.status(500).json({ error: "An error occurred" });
