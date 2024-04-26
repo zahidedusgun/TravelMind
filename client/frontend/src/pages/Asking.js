@@ -1,12 +1,17 @@
-import React from 'react'
-import Form from '../components/Form'
+import React from "react";
+import Form from "../components/Form";
+import Advices from "../components/Advices";
 
-function Asking() {
+export default function Asking() {
+  // const [showAdvices, setShowAdvices] = React.useState(false);
+
+  // const handleFormSubmit = () => {
+  //   setShowAdvices(true);
+  // };
+
   return (
     <div>
-      <Form/>
+      <Form />
     </div>
-  )
+  );
 }
-
-export default Asking
