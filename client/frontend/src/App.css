@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #12264d;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -34,5 +34,74 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+.MuiCardOverflow-root.MuiCardOverflow-variantSolid.MuiCardOverflow-colorPrimary.css-d7trsz-JoyCardOverflow-root {
+  background-color: #402a4b;
+  color: white;
+}
+.MuiCardContent-root.css-459kdp-JoyCardContent-root {
+  background-image: linear-gradient(
+    to right,
+    #402a4b,
+    #362035,
+    #281723,
+    #1a0e13,
+    #ffffff
+  );
+  color: white;
+  width: 150px;
+}
+
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans:100,300,400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Indie+Flower");
+
+:root {
+  --f-primary: "Josefin Sans", sans-serif;
+  --f-secondary: "Indie Flower", cursive;
+  --c-front: #ffffff;
+  --c-back: #1d1f20;
+  --c-back-light: #383838;
+  --c-hilight: #402a4b;
+  --s-footer-height: 3rem;
+}
+
+.boxShadow {
+  box-shadow: 0 0 10rem 0 #000000;
+}
+.boxShadow--in {
+  box-shadow: 0 0 10rem 0 #000000 inset;
+}
+
+
+.svg-calLoader {
+  width: 230px;
+  height: 230px;
+  transform-origin: 115px 115px;
+  animation: 1.4s linear infinite loader-spin;
+}
+
+.cal-loader__plane {
+  fill: var(--c-hilight);
+}
+.cal-loader__path {
+  stroke: var(--c-front);
+  animation: 1.4s ease-in-out infinite loader-path;
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader-path {
+  0% {
+    stroke-dasharray: 0, 580, 0, 0, 0, 0, 0, 0, 0;
+  }
+  50% {
+    stroke-dasharray: 0, 450, 10, 30, 10, 30, 10, 30, 10;
+  }
+  100% {
+    stroke-dasharray: 0, 580, 0, 0, 0, 0, 0, 0, 0;
   }
 }

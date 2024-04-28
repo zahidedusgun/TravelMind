@@ -5,13 +5,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-.MuiCardOverflow-root.MuiCardOverflow-variantSolid.MuiCardOverflow-colorPrimary.css-d7trsz-JoyCardOverflow-root {
-  background-color: black; /* Kart arka plan rengi */
-  color: white; /* Metin rengi */
-}
+
+
+
