@@ -9,13 +9,13 @@
 * {
   box-sizing: border-box;
   margin: 10px;
-  padding: 0;
-  color: white;
+  padding: 0;  
+
 }
 
 body {
   font-family: "Open Sans", sans-serif;
-  background: var(--secondary);
+
 }
 
 header {
@@ -33,8 +33,8 @@ header nav a {
   text-decoration: none;
   padding: 9px;
   border-radius: 30px;
-  margin: 0 5px;
   font-size: 15px;
+  color: white;
 }
 
 nav a.active {
@@ -53,19 +53,19 @@ p {
 main {
   padding: 20px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.2);
 }
 .main-layout header {
   display: flex;
   justify-content: space-between; /* Adjust content to space-between */
   align-items: center;
-  background-color: #402a4b;
+  background-color: rgba(64, 42, 75, 1);
+  background-image: linear-gradient(162deg, rgba(64, 42, 75, 1) 61%, rgba(255, 255, 255, 1) 100%);
   color: white;
   padding: 20px;
   border-radius: 50px;
-  height: 80px;
+  height: 65px;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 18px;
 }
 
 header img {
@@ -74,8 +74,4 @@ header img {
 
 header nav {
   flex: auto;
-}
-.MuiCardOverflow-root.MuiCardOverflow-variantSolid.MuiCardOverflow-colorPrimary.css-d7trsz-JoyCardOverflow-root {
-  background-color: #402a4b;
-  color: white; /* Metin rengi */
 }
