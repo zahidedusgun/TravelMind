@@ -4,6 +4,10 @@ const app = express();
 const port = 5000;
 require("dotenv").config();
 const { OpenAI } = require("openai");
+const  passport = require("passport");
+const cookieSession = require("cookie-session");
+const passportSetup = require("./passportSetup");
+const authRoute = require("./routes/auth");
 
 const openai = new OpenAI({
 	key: process.env.OPENAI_API_KEY,
@@ -14,6 +18,15 @@ const systemPrompt = process.env.chatText;
 app.use(cors());
 
 app.use(express.json());
+
+app.use(cookieSession({
+    name: "session",
+    keys: ["cyberwolve"],
+    maxAge: 24 * 60 * 60 * 100,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
