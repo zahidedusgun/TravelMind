@@ -9,18 +9,17 @@ function Home() {
   return (
     <>
       <Box>
-        (Bu sayfa güncellenecek!!)
         <Grid
           container
           sx={{
             backgroundImage:
-              "linear-gradient(150deg, rgba(64, 42, 75, 1) 61%, rgba(255, 255, 255, 1) 100%);",
+              "linear-gradient(162deg, rgba(49, 37, 102, 1) 61%, rgba(255, 255, 255, 1) 100%);",
             padding: "15px",
             borderRadius: "20px",
           }}
         >
           <Grid item xs={12} md={6}>
-            <Box sx={{ color: "white" }}>
+            <Box sx={{ color: "white", padding:"50px" }}>
               <h1>TravelMind </h1>
               <h1>Planlayıcısına Hoşgeldin!</h1>
               <br></br>
@@ -28,7 +27,7 @@ function Home() {
               <p>aşağıdaki butonu takip edebilirsin 👇</p>
             </Box>
 
-            <Link to="/ask">
+            <Link to="/chat">
               {" "}
               <br></br>
               <Button variant="contained" size="medium" color="secondary">
@@ -37,7 +36,7 @@ function Home() {
             </Link>
           </Grid>
           <Grid item xs={12} md={6}>
-            <img src={image2} width="80%" />
+            <img src={image2} width="120%" />
           </Grid>
         </Grid>
 
