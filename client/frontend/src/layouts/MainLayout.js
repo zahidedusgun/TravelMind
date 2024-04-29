@@ -10,12 +10,12 @@ function MainLayout() {
       <div className="main-layout">
         <header>
           <a href="/">
-            <img src={logo} alt="TravelMind" height="140px" />
+            <img src={logo} alt="TravelMind" height="120px" />
           </a>
 
           <nav>
             <NavLink to="/">Anasayfa</NavLink>
-            <NavLink to="ask">Seyahat Planını Oluştur</NavLink>
+            <NavLink to="chat">Seyahat Planını Oluştur</NavLink>
             <NavLink to="help">Bizim Hakkımızda</NavLink>
           </nav>
         </header>
