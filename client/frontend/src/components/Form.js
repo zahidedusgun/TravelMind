@@ -5,17 +5,13 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import CircularProgress from "@mui/material/CircularProgress";
-import AspectRatio from "@mui/joy/AspectRatio";
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
-import CardOverflow from "@mui/joy/CardOverflow";
-import Typography from "@mui/joy/Typography";
-import Checkbox from "@mui/material/Checkbox";
-import Divider from "@mui/material/Divider";
 import image3 from "../images/image3.png";
 import Spinner from "./Spinner";
 import Chip from "@mui/material/Chip";
+import Advices from "./Advices";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Typography from "@mui/material/Typography";
 
 const purposes = [
   {
@@ -38,6 +34,11 @@ export default function Form() {
   const [loading, setLoading] = useState(false);
   const [advices, setAdvices] = useState([]);
   const [error, setError] = useState(false);
+  const [selectedActivities, setSelectedActivities] = React.useState(() => [
+    "muzeler",
+    "alisveris",
+    "tarihi",
+  ]);
   const [data, setData] = useState({
     country: "",
     city: "",
@@ -46,7 +47,9 @@ export default function Form() {
     kids: "",
   });
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
+  const handleActivityChange = (event, newActivities) => {
+    setSelectedActivities(newActivities);
+  };
   const isButtonDisabled =
     Object.values(data).some((value) => !value) || loading;
 
@@ -89,7 +92,6 @@ export default function Form() {
       ) : (
         <Grid container spacing={12}>
           {/* form */}
-
           <Grid item xs={12} md={6}>
             <Box
               component="form"
@@ -108,43 +110,49 @@ export default function Form() {
               >
                 <Grid item xs={12} md={12}>
                   <TextField
-                    id="outlined-required-country"
+                    id="filled-required-country"
                     label="Ülke İsmini Giriniz"
                     color="secondary"
                     value={data.country}
                     name="country"
                     onChange={changeHandle}
                     className="custom-text-field"
+                    variant="filled"
                   />
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <TextField
-                    id="outlined-required-city1"
+                    id="filled-required-city1"
                     label="Şehir İsmini Giriniz"
                     color="secondary"
                     value={data.city}
                     name="city"
                     onChange={changeHandle}
+                    variant="filled"
                   />
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <TextField
-                    id="outlined-select-currency"
-                    label="Gün Sayısı"
-                    type="number"
+                    id="filled-select-currency"
+                    select
+                    label="Gün"
                     helperText="Kaç gün seyahat edeceksiniz?"
                     color="secondary"
                     value={data.days}
                     name="days"
                     onChange={changeHandle}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
+                    variant="filled"
+                  >
+                    {numbers.map((number) => (
+                      <MenuItem key={number} value={number}>
+                        {number}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <TextField
-                    id="outlined-select-currency"
+                    id="filled-select-currency"
                     select
                     label="Seyahat Amacı"
                     helperText="Seyahat sebebinizi seçiniz."
@@ -152,6 +160,7 @@ export default function Form() {
                     value={data.purpose}
                     name="purpose"
                     onChange={changeHandle}
+                    variant="filled"
                   >
                     {purposes.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -162,7 +171,7 @@ export default function Form() {
                 </Grid>
                 <Grid item xs={12} md={12}>
                   <TextField
-                    id="outlined-select-currency"
+                    id="filled-select-currency"
                     select
                     label="Çocuk Sayısı"
                     helperText="Kaç çocuğa sahipsiniz?"
@@ -170,6 +179,7 @@ export default function Form() {
                     value={data.kids}
                     name="kids"
                     onChange={changeHandle}
+                    variant="filled"
                   >
                     {numbers.map((number) => (
                       <MenuItem key={number} value={number}>
@@ -190,10 +200,113 @@ export default function Form() {
                   >
                     Plan
                   </Button>
+                  <Box sx={{ padding: 2 }}>
+                    <Typography variant="h6">
+                      Yapmak istediğiniz faaliyet türlerini seçin
+                    </Typography>
+                    <ToggleButtonGroup
+                      value={selectedActivities}
+                      onChange={handleActivityChange}
+                      aria-label="faaliyetler"
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                        marginTop: 1,
+                      }}
+                    >
+                      <ToggleButton
+                        value="cocuk-dostu"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Çocuk Dostu
+                      </ToggleButton>
+                      <ToggleButton
+                        value="muzeler"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Müzeler
+                      </ToggleButton>
+                      <ToggleButton
+                        value="alisveris"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Alışveriş
+                      </ToggleButton>
+                      <ToggleButton
+                        value="tarihi"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Tarihi
+                      </ToggleButton>
+                      <ToggleButton
+                        value="acik-hava-maceralar"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Açık Hava Maceraları
+                      </ToggleButton>
+                      <ToggleButton
+                        value="sanat-kulturel"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Sanat & Kültürel
+                      </ToggleButton>
+                      <ToggleButton
+                        value="eglence-parklar"
+                        sx={{
+                          borderRadius: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: "#312566",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        Eğlence Parkları
+                      </ToggleButton>
+                    </ToggleButtonGroup>
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
           </Grid>
+
+          {/* görsel alanı */}
           <Grid item xs={4} md={6}>
             <Box>
               {" "}
@@ -207,102 +320,8 @@ export default function Form() {
           </Grid>
         </Grid>
       )}
-
       {/* advices */}
-      <Grid container spacing={2}>
-        <Box>
-          <Box>
-            {advices &&
-              advices.info &&
-              advices.info.map((info, infoIndex) => (
-                <div key={infoIndex}>
-                  <p>{info}</p>
-                  <Grid container spacing={2}>
-                    {advices.option.map((option, optionIndex) => (
-                      <Grid item xs={12} sm={12} md={4} key={optionIndex}>
-                        <Card variant="outlined" sx={{ width: 320 }}>
-                          <CardOverflow variant="soft">
-                            <Divider inset="context" />
-                            <CardContent orientation="horizontal">
-                              <Divider orientation="vertical" />
-                              <Typography level="body-xl" >
-                                Öneri {option.option}{" "}   
-                                <Typography level="body-xl"sx={{color:"purple"}}>
-                                  Plana Ekle
-                                  <Checkbox
-                                    {...label}
-                                    defaultChecked
-                                    color="success"
-                                  />
-                                </Typography>
-                              </Typography>
-                            </CardContent>
-                          </CardOverflow>
-                          <CardContent>
-                            <CardContent>
-                              <Typography level="body-sm">
-                                {" "}
-                                <Divider>
-                                  <Chip
-                                    label="Otel"
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: "#312566",
-                                      color: "white",
-                                    }}
-                                  />
-                                </Divider>
-                                <p>{option.otel}</p>
-                                <Divider>
-                                  <Chip
-                                    label="Kahve"
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: "#312566",
-                                      color: "white",
-                                    }}
-                                  />
-                                </Divider>
-                                <p> {option.kahve}</p>{" "}
-                                <Divider>
-                                  <Chip
-                                    label="Restoran"
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: "#312566",
-                                      color: "white",
-                                    }}
-                                  />
-                                </Divider>
-                                <p>{option.restaurant}</p>
-                                <Divider>
-                                  <Chip
-                                    label="Sanat Gezileri"
-                                    size="small"
-                                    sx={{
-                                      backgroundColor: "#312566",
-                                      color: "white",
-                                    }}
-                                  />
-                                </Divider>
-                                <p> {option.history}</p>
-                                <Divider />
-                                <p> Müze: {option.museum}</p>
-                                <p>Galeri: {option.gallery}</p>
-                                <Divider />
-                                <p>Etkinlik: {option.event}</p>
-                              </Typography>
-                            </CardContent>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </div>
-              ))}
-          </Box>
-        </Box>
-      </Grid>
+      <Advices advices={advices} />
     </Box>
   );
 }
