@@ -73,7 +73,7 @@ function Advices({ advices }) {
                     <Typography variant="body2">
                       {advices.weather[dayKey].weather}
                     </Typography>
-                    <img src={`https:${advices.weather[dayKey].icon}`} alt="weather icon" />
+                    <img src={https:${advices.weather[dayKey].icon}} alt="weather icon" />
                   </CardContent>
                 </Card>
               </Grid>
@@ -124,7 +124,7 @@ function Advices({ advices }) {
                                   {option.otelPhotoUrl && (
                                     <img
                                       src={option.otelPhotoUrl}
-                                      alt={`Photo of ${option.otel}`}
+                                      alt={Photo of ${option.otel}}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -145,7 +145,7 @@ function Advices({ advices }) {
                                   {option.kahvePhotoUrl && (
                                     <img
                                       src={option.kahvePhotoUrl}
-                                      alt={`Photo of ${option.kahve}`}
+                                      alt={Photo of ${option.kahve}}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -166,7 +166,7 @@ function Advices({ advices }) {
                                   {option.restaurantPhotoUrl && (
                                     <img
                                       src={option.restaurantPhotoUrl}
-                                      alt={`Photo of ${option.restaurant}`}
+                                      alt={Photo of ${option.restaurant}}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -187,7 +187,7 @@ function Advices({ advices }) {
                                   {option.museumPhotoUrl && (
                                     <img
                                       src={option.museumPhotoUrl}
-                                      alt={`Photo of ${option.museum}`}
+                                      alt={Photo of ${option.museum}}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -224,4 +224,4 @@ function Advices({ advices }) {
   );
 }
 
-export default Advices;
+export default Advices;

@@ -49,7 +49,7 @@ app.post("/chat", async (req, res) => {
         },
         {
           role: "user",
-          content: `${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids}`,
+          content: ${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids},
         },
       ],
     });
@@ -93,7 +93,7 @@ app.post("/chat", async (req, res) => {
         const results = travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
         
         // Log results to inspect the structure
-        console.log(`Results for query "${query}":`, JSON.stringify(results, null, 2));
+        console.log(Results for query "${query}":, JSON.stringify(results, null, 2));
 
         let photoUrl = null;
         let latitude = null;
@@ -112,10 +112,10 @@ app.post("/chat", async (req, res) => {
           }
         }
 
-        console.log(`Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude}`);
+        console.log(Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude});
         return { photoUrl, latitude, longitude };
       } catch (error) {
-        console.error(`Failed to fetch data for query: ${query}`, error);
+        console.error(Failed to fetch data for query: ${query}, error);
         return { photoUrl: null, latitude: null, longitude: null };
       }
     };
@@ -150,10 +150,10 @@ app.post("/chat", async (req, res) => {
         const date = moment(startDate).add(i, "days").format("YYYY-MM-DD");
         const weatherApiOptions = {
           method: "GET",
-          url: `http://api.weatherapi.com/v1/future.json`,
+          url: http://api.weatherapi.com/v1/future.json,
           params: {
             key: WEATHER_API_KEY,
-            q: `${city},${country}`,
+            q: ${city},${country},
             dt: date,
           },
         };
@@ -161,12 +161,12 @@ app.post("/chat", async (req, res) => {
         try {
           const weatherApiResponse = await axios.request(weatherApiOptions);
           console.log(
-            `Weather API Response Data for ${date}:`,
+            Weather API Response Data for ${date}:,
             weatherApiResponse.data
           ); // Log the response data for debugging
           const forecast = weatherApiResponse.data.forecast.forecastday[0];
           weatherData.push({
-            [`day${i + 1}weather`]: {
+            [day${i + 1}weather]: {
               date: forecast.date,
               temperature: forecast.day.avgtemp_c,
               weather: forecast.day.condition.text,
@@ -175,7 +175,7 @@ app.post("/chat", async (req, res) => {
           });
         } catch (error) {
           console.error(
-            `Failed to fetch weather data for ${city}, ${country} on ${date}`,
+            Failed to fetch weather data for ${city}, ${country} on ${date},
             error
           );
         }
@@ -205,15 +205,15 @@ app.post("/chat", async (req, res) => {
   } catch (error) {
     if (error.response) {
       console.error(
-        `API responded with status ${error.response.status}: ${error.response.data.message}`
+        API responded with status ${error.response.status}: ${error.response.data.message}
       );
     } else {
-      console.error(`An error occurred: ${error.message}`);
+      console.error(An error occurred: ${error.message});
     }
     res.status(500).json({ error: "An error occurred" });
   }
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(Server is running on port ${port});
 });

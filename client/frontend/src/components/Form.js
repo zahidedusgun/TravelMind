@@ -341,6 +341,6 @@ export default function Form() {
       )}
       {/* advices */}
       <Advices advices={advices} />
-    </Box>
-  );
+    </Box>
+  );
 }
