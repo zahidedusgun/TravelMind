@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const moment = require("moment");
 require("dotenv").config();
 const { OpenAI } = require("openai");
 const  passport = require("passport");
@@ -17,6 +18,7 @@ const openai = new OpenAI({
 
 const systemPrompt = process.env.chatText;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY; 
 
 app.use(cors());
 app.use(express.json());
@@ -36,6 +38,8 @@ app.get("/", (req, res) => {
 
 app.post("/chat", async (req, res) => {
   try {
+    const { country, city, days, purpose, kids, date } = req.body;
+
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -45,7 +49,7 @@ app.post("/chat", async (req, res) => {
         },
         {
           role: "user",
-          content: `${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids}`,
+          content: ${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids},
         },
       ],
     });
@@ -87,13 +91,31 @@ app.post("/chat", async (req, res) => {
       try {
         const travelAdvisorResponse = await axios.request(travelAdvisorOptions);
         const results = travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
-        const photoUrl = results.length > 0 ? results[0].image.photo.photoSizes[0].url : null;
-        const latitude = results.length > 0 ? results[0].detailsV2.geocode.latitude : null;
-        const longitude = results.length > 0 ? results[0].detailsV2.geocode.longitude : null;
-        console.log(`Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude}`);
+        
+        // Log results to inspect the structure
+        console.log(Results for query "${query}":, JSON.stringify(results, null, 2));
+
+        let photoUrl = null;
+        let latitude = null;
+        let longitude = null;
+
+        if (results.length > 0) {
+          const result = results[0];
+
+          if (result.image && result.image.photo && result.image.photo.photoSizes && result.image.photo.photoSizes.length > 0) {
+            photoUrl = result.image.photo.photoSizes[0].url;
+          }
+
+          if (result.detailsV2 && result.detailsV2.geocode) {
+            latitude = result.detailsV2.geocode.latitude;
+            longitude = result.detailsV2.geocode.longitude;
+          }
+        }
+
+        console.log(Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude});
         return { photoUrl, latitude, longitude };
       } catch (error) {
-        console.error(`Failed to fetch data for query: ${query}`, error);
+        console.error(Failed to fetch data for query: ${query}, error);
         return { photoUrl: null, latitude: null, longitude: null };
       }
     };
@@ -121,18 +143,77 @@ app.post("/chat", async (req, res) => {
       option.museumLongitude = museumData.longitude;
     }
 
-    console.log("Final Advices with Photos and Locations:", JSON.stringify(advices, null, 2));
+    // Function to fetch weather data from WeatherAPI
+    const fetchWeatherData = async (city, country, days, startDate) => {
+      const weatherData = [];
+      for (let i = 0; i < days; i++) {
+        const date = moment(startDate).add(i, "days").format("YYYY-MM-DD");
+        const weatherApiOptions = {
+          method: "GET",
+          url: http://api.weatherapi.com/v1/future.json,
+          params: {
+            key: WEATHER_API_KEY,
+            q: ${city},${country},
+            dt: date,
+          },
+        };
+
+        try {
+          const weatherApiResponse = await axios.request(weatherApiOptions);
+          console.log(
+            Weather API Response Data for ${date}:,
+            weatherApiResponse.data
+          ); // Log the response data for debugging
+          const forecast = weatherApiResponse.data.forecast.forecastday[0];
+          weatherData.push({
+            [day${i + 1}weather]: {
+              date: forecast.date,
+              temperature: forecast.day.avgtemp_c,
+              weather: forecast.day.condition.text,
+              icon: forecast.day.condition.icon, // Add the icon URL
+            },
+          });
+        } catch (error) {
+          console.error(
+            Failed to fetch weather data for ${city}, ${country} on ${date},
+            error
+          );
+        }
+      }
+      return weatherData;
+    };
+
+    // Fetch weather data for the specified city and country
+    const weatherData = await fetchWeatherData(city, country, days, date);
+
+    // Flatten the weather data into a single object
+    const weatherObject = weatherData.reduce((acc, dayWeather) => {
+      const dayKey = Object.keys(dayWeather)[0];
+      acc[dayKey] = dayWeather[dayKey];
+      return acc;
+    }, {});
+
+    advices.weather = weatherObject;
+
+    // Fetch photos and locations for each option
+
+    console.log(
+      "Final Advices with Photos, Locations, and Weather:",
+      JSON.stringify(advices, null, 2)
+    );
     res.json(advices);
   } catch (error) {
     if (error.response) {
-      console.error(`API responded with status ${error.response.status}: ${error.response.data.message}`);
+      console.error(
+        API responded with status ${error.response.status}: ${error.response.data.message}
+      );
     } else {
-      console.error(`An error occurred: ${error.message}`);
+      console.error(An error occurred: ${error.message});
     }
     res.status(500).json({ error: "An error occurred" });
   }
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(Server is running on port ${port});
 });

@@ -4,29 +4,17 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import image3 from "../images/image3.png";
-import Spinner from "./Spinner";
-import Chip from "@mui/material/Chip";
-import Advices from "./Advices";
+import Typography from "@mui/material/Typography";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import Typography from "@mui/material/Typography";
-
-const purposes = [
-  {
-    value: "work",
-    label: "İş Gezisi",
-  },
-  {
-    value: "tourist",
-    label: "Turistik Gezi",
-  },
-  {
-    value: "honeymoon",
-    label: "Balayı",
-  },
-];
+import Switch from "@mui/material/Switch";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Spinner from "./Spinner";
+import Advices from "./Advices";
+import image3 from "../images/image3.png";
 
 const numbers = Array.from({ length: 6 }, (_, index) => index);
 
@@ -34,30 +22,53 @@ export default function Form() {
   const [loading, setLoading] = useState(false);
   const [advices, setAdvices] = useState([]);
   const [error, setError] = useState(false);
-  const [selectedActivities, setSelectedActivities] = React.useState(() => [
+  const [selectedActivities, setSelectedActivities] = useState([
     "muzeler",
     "alisveris",
     "tarihi",
   ]);
+  const [hasKids, setHasKids] = useState(false);
   const [data, setData] = useState({
     country: "",
     city: "",
     days: "",
-    purpose: "",
+    purpose: selectedActivities,
     kids: "",
+    date: dayjs(),
   });
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const handleActivityChange = (event, newActivities) => {
-    setSelectedActivities(newActivities);
-  };
-  const isButtonDisabled =
-    Object.values(data).some((value) => !value) || loading;
+
+  const isButtonDisabled = !data.country || !data.city || !data.days || !data.date || !data.purpose.length || loading;
 
   const changeHandle = (e) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleActivityChange = (event, newActivities) => {
+    setSelectedActivities(newActivities);
+    setData({
+      ...data,
+      purpose: newActivities,
+    });
+  };
+
+  const handleDateChange = (newValue) => {
+    setData({
+      ...data,
+      date: newValue,
+    });
+  };
+
+  const handleKidsSwitch = (event) => {
+    setHasKids(event.target.checked);
+    if (!event.target.checked) {
+      setData({
+        ...data,
+        kids: "",
+      });
+    }
   };
 
   const submitHandle = (e) => {
@@ -82,7 +93,6 @@ export default function Form() {
       })
       .finally(() => setLoading(false));
     console.log(data);
-    console.log(advices.days[0].history);
   };
 
   return (
@@ -108,6 +118,15 @@ export default function Form() {
                 justifyContent="center"
                 alignItems="center"
               >
+                <Grid item xs={12} md={12}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      variant="filled"
+                      value={data.date}
+                      onChange={handleDateChange}
+                    />
+                  </LocalizationProvider>
+                </Grid>
                 <Grid item xs={12} md={12}>
                   <TextField
                     id="filled-required-country"
@@ -150,50 +169,49 @@ export default function Form() {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={12} md={12}>
-                  <TextField
-                    id="filled-select-currency"
-                    select
-                    label="Seyahat Amacı"
-                    helperText="Seyahat sebebinizi seçiniz."
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  <Typography variant="h6" sx={{ marginRight: 2 }}>
+                    Çocuğun var mı?
+                  </Typography>
+                  <Switch
+                    checked={hasKids}
+                    onChange={handleKidsSwitch}
                     color="secondary"
-                    value={data.purpose}
-                    name="purpose"
-                    onChange={changeHandle}
-                    variant="filled"
-                  >
-                    {purposes.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
                 </Grid>
-                <Grid item xs={12} md={12}>
-                  <TextField
-                    id="filled-select-currency"
-                    select
-                    label="Çocuk Sayısı"
-                    helperText="Kaç çocuğa sahipsiniz?"
-                    color="secondary"
-                    value={data.kids}
-                    name="kids"
-                    onChange={changeHandle}
-                    variant="filled"
-                  >
-                    {numbers.map((number) => (
-                      <MenuItem key={number} value={number}>
-                        {number}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
+
+                {hasKids && (
+                  <Grid item xs={12} md={12}>
+                    <TextField
+                      id="filled-select-currency"
+                      select
+                      label="Çocuk Sayısı"
+                      helperText="Kaç çocuğa sahipsiniz?"
+                      color="secondary"
+                      value={data.kids}
+                      name="kids"
+                      onChange={changeHandle}
+                      variant="filled"
+                    >
+                      {numbers.map((number) => (
+                        <MenuItem key={number} value={number}>
+                          {number}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                )}
                 <Grid item xs={12} md={12}>
                   <Button
                     variant="contained"
                     color="secondary"
                     disabled={isButtonDisabled}
-                    onClick={submitHandle}
+                    type="submit"
                     sx={{
                       "&.Mui-disabled": { opacity: 0.5, pointerEvents: "none" },
                     }}
@@ -309,12 +327,13 @@ export default function Form() {
           {/* görsel alanı */}
           <Grid item xs={4} md={6}>
             <Box>
-              {" "}
-              <br></br> <br></br>
+              <br></br>
+              <br></br>
               <h4 style={{ color: "#402a4b" }}>
                 Seyahat planına yandaki soruları cevaplayarak ulaşabilirsin.
               </h4>
-              <br></br> <br></br>
+              <br></br>
+              <br></br>
               <img src={image3} />
             </Box>
           </Grid>
@@ -322,6 +341,6 @@ export default function Form() {
       )}
       {/* advices */}
       <Advices advices={advices} />
-    </Box>
-  );
+    </Box>
+  );
 }
