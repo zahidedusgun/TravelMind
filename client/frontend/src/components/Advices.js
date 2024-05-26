@@ -106,7 +106,7 @@ function Advices({ advices }) {
                     <Typography variant="body2">
                       {advices.weather[dayKey].weather}
                     </Typography>
-                    <img src={`https:${advices.weather[dayKey].icon}`} alt="weather icon" />
+                    <img src={https:${advices.weather[dayKey].icon}} alt="weather icon" />
                   </CardContent>
                 </Card>
               </Grid>
@@ -116,165 +116,140 @@ function Advices({ advices }) {
       )}
 
       <Grid container spacing={2}>
-        {advices.option.map((option, optionIndex) => {
-          const locations = [
-            {
-              name: option.otel,
-              latitude: option.otelLatitude,
-              longitude: option.otelLongitude,
-            },
-            {
-              name: option.kahve,
-              latitude: option.kahveLatitude,
-              longitude: option.kahveLongitude,
-            },
-            {
-              name: option.restaurant,
-              latitude: option.restaurantLatitude,
-              longitude: option.restaurantLongitude,
-            },
-            {
-              name: option.museum,
-              latitude: option.museumLatitude,
-              longitude: option.museumLongitude,
-            },
-          ];
-
-          const distances = option.distances || [];
-
-          return (
-            <Grid item xs={12} sm={12} md={6} key={optionIndex}>
-              <Card variant="outlined" sx={{ width: 400, height: 600 }}>
-                <Box>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "100%",
-                      textAlign: "center",
-                    }}
-                  >
-                    <p>{option.option}</p>. Öneriniz Aşağıdadır.
-                  </div>
-                </Box>
-                <CardContent>
-                  <Typography level="body-sm">
-                    <div className="slider-container">
-                      <Slider {...settings}>
-                        <div style={{ width: 120 }}>
-                          <Divider>
-                            <Chip
-                              label="Otel"
-                              size="small"
-                              sx={{
-                                backgroundColor: "#312566",
-                                color: "white",
-                              }}
-                            />
-                          </Divider>
-                          {option.otelPhotoUrl && (
-                            <img
-                              src={option.otelPhotoUrl}
-                              alt={`Photo of ${option.otel}`}
-                              style={{ width: "100%", height: "auto" }}
-                            />
-                          )}
-                          <p>{option.otel}</p>
-                        </div>
-                        <div>
-                          <Divider>
-                            <Chip
-                              label="Kafe"
-                              size="small"
-                              sx={{
-                                backgroundColor: "#312566",
-                                color: "white",
-                              }}
-                            />
-                          </Divider>
-                          {option.kahvePhotoUrl && (
-                            <img
-                              src={option.kahvePhotoUrl}
-                              alt={`Photo of ${option.kahve}`}
-                              style={{ width: "100%", height: "auto" }}
-                            />
-                          )}
-                          <p>{option.kahve}</p>
-                        </div>
-                        <div>
-                          <Divider>
-                            <Chip
-                              label="Restoran"
-                              size="small"
-                              sx={{
-                                backgroundColor: "#312566",
-                                color: "white",
-                              }}
-                            />
-                          </Divider>
-                          {option.restaurantPhotoUrl && (
-                            <img
-                              src={option.restaurantPhotoUrl}
-                              alt={`Photo of ${option.restaurant}`}
-                              style={{ width: "100%", height: "auto" }}
-                            />
-                          )}
-                          <p>{option.restaurant}</p>
-                        </div>
-                        <div>
-                          <Divider>
-                            <Chip
-                              label="Müze"
-                              size="small"
-                              sx={{
-                                backgroundColor: "#312566",
-                                color: "white",
-                              }}
-                            />
-                          </Divider>
-                          {option.museumPhotoUrl && (
-                            <img
-                              src={option.museumPhotoUrl}
-                              alt={`Photo of ${option.museum}`}
-                              style={{ width: "100%", height: "auto" }}
-                            />
-                          )}
-                          <p>{option.museum}</p>
-                        </div>
-                      </Slider>
-                    </div>
-                    <Button variant="contained" color="primary" onClick={() => handleOpen(locations, distances)}>
-                      Konumları Gör
-                    </Button>
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6" component="h2">
-            Konumlar ve Mesafeler
-          </Typography>
-          <Map locations={selectedLocations} />
-          <Box mt={2}>
-            <Typography variant="h6">Mesafeler ve Süreler</Typography>
-            {selectedDistances.map((distance, index) => (
-              <Box key={index} display="flex" alignItems="center">
-                {distance.mode === "walking" ? (
-                  <DirectionsWalk />
-                ) : (
-                  <DirectionsCar />
-                )}
-                <Typography>
-                  {distance.from} ile {distance.to} arası: {distance.distance} - {distance.duration}
-                </Typography>
-              </Box>
-            ))}
+        <Box>
+          <Box item xs={12} sm={12} md={6}>
+            {advices &&
+              advices.info &&
+              <div>
+                <p>{advices.info}</p>
+                <Grid container spacing={2}>
+                  {advices.option.map((option, optionIndex) => (
+                    <Grid item xs={12} sm={12} md={6} key={optionIndex}>
+                      <Card variant="outlined" sx={{ width: 400, height: 600 }}>
+                        <CardOverflow variant="soft">
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: "100%",
+                              textAlign: "center",
+                            }}
+                          >
+                            <p>{option.option}</p>. Öneriniz Aşağıdadır.
+                          </div>
+                        </CardOverflow>
+                        <CardContent>
+                          <Typography level="body-sm">
+                            <div className="slider-container">
+                              <Slider {...settings}>
+                                <div style={{ width: 120 }}>
+                                  <Divider>
+                                    <Chip
+                                      label="Otel"
+                                      size="small"
+                                      sx={{
+                                        backgroundColor: "#312566",
+                                        color: "white",
+                                      }}
+                                    />
+                                  </Divider>
+                                  {option.otelPhotoUrl && (
+                                    <img
+                                      src={option.otelPhotoUrl}
+                                      alt={`Photo of ${option.otel}`}
+                                      style={{ width: "100%", height: "auto" }}
+                                    />
+                                  )}
+                                  <p>{option.otel}</p>
+                                  <Map latitude={option.otelLatitude} longitude={option.otelLongitude} />
+                                </div>
+                                <div>
+                                  <Divider>
+                                    <Chip
+                                      label="Kafe"
+                                      size="small"
+                                      sx={{
+                                        backgroundColor: "#312566",
+                                        color: "white",
+                                      }}
+                                    />
+                                  </Divider>
+                                  {option.kahvePhotoUrl && (
+                                    <img
+                                      src={option.kahvePhotoUrl}
+                                      alt={`Photo of ${option.kahve}`}
+                                      style={{ width: "100%", height: "auto" }}
+                                    />
+                                  )}
+                                  <p>{option.kahve}</p>
+                                  <Map latitude={option.kahveLatitude} longitude={option.kahveLongitude} />
+                                </div>
+                                <div>
+                                  <Divider>
+                                    <Chip
+                                      label="Restoran"
+                                      size="small"
+                                      sx={{
+                                        backgroundColor: "#312566",
+                                        color: "white",
+                                      }}
+                                    />
+                                  </Divider>
+                                  {option.restaurantPhotoUrl && (
+                                    <img
+                                      src={option.restaurantPhotoUrl}
+                                      alt={`Photo of ${option.restaurant}`}
+                                      style={{ width: "100%", height: "auto" }}
+                                    />
+                                  )}
+                                  <p>{option.restaurant}</p>
+                                  <Map latitude={option.restaurantLatitude} longitude={option.restaurantLongitude} />
+                                </div>
+                                <div>
+                                  <Divider>
+                                    <Chip
+                                      label="Müze"
+                                      size="small"
+                                      sx={{
+                                        backgroundColor: "#312566",
+                                        color: "white",
+                                      }}
+                                    />
+                                  </Divider>
+                                  {option.museumPhotoUrl && (
+                                    <img
+                                      src={option.museumPhotoUrl}
+                                      alt={`Photo of ${option.museum}`}
+                                      style={{ width: "100%", height: "auto" }}
+                                    />
+                                  )}
+                                  <p>{option.museum}</p>
+                                  <Map latitude={option.museumLatitude} longitude={option.museumLongitude} />
+                                </div>
+                                <div>
+                                  <Divider>
+                                    <Chip
+                                      label="Sanat Gezileri"
+                                      size="small"
+                                      sx={{
+                                        backgroundColor: "#312566",
+                                        color: "white",
+                                      }}
+                                    />
+                                  </Divider>
+                                  <p>{option.history}</p>
+                                </div>
+                              </Slider>
+                            </div>
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </div>
+            }
           </Box>
           <Button onClick={handleClose}>Kapat</Button>
         </Box>
@@ -283,4 +258,4 @@ function Advices({ advices }) {
   );
 }
 
-export default Advices;
+export default Advices;
