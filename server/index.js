@@ -1,13 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
-const moment = require("moment");
-require("dotenv").config();
-const { OpenAI } = require("openai");
-const passport = require("passport");
-const cookieSession = require("cookie-session");
-const passportSetup = require("./passportSetup");
-const authRoute = require("./routes/auth");
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
+const moment = require('moment');
+require('dotenv').config();
+const { OpenAI } = require('openai');
+const passport = require('passport');
+const cookieSession = require('cookie-session');
+const passportSetup = require('./passportSetup');
+const authRoute = require('./routes/auth');
 
 const app = express();
 const port = 5000;
@@ -18,41 +18,39 @@ const openai = new OpenAI({
 
 const systemPrompt = process.env.chatText;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_API_KEY; 
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY; 
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_API_KEY;  // Add your Google Maps API Key here
 
 app.use(cors());
 app.use(express.json());
 
-app.use(
-  cookieSession({
-    name: "session",
-    keys: ["cyberwolve"],
+app.use(cookieSession({
+    name: 'session',
+    keys: ['cyberwolve'],
     maxAge: 24 * 60 * 60 * 100,
-  })
-);
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
 });
 
-app.post("/chat", async (req, res) => {
+app.post('/chat', async (req, res) => {
   try {
     const { country, city, days, purpose, kids, date } = req.body;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: 'gpt-3.5-turbo',
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: systemPrompt,
         },
         {
-          role: "user",
-          content: ${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids},
+          role: 'user',
+          content: `${req.body.country} - ${req.body.city}-${req.body.days}-${req.body.purpose}-${req.body.kids}`,
         },
       ],
     });
@@ -60,42 +58,41 @@ app.post("/chat", async (req, res) => {
     let advices = completion.choices[0].message.content;
 
     // Log the raw response content
-    console.log("Raw response content from OpenAI API:", advices);
+    console.log('Raw response content from OpenAI API:', advices);
 
     // Parsing the response content safely
     try {
       advices = JSON.parse(advices);
     } catch (parseError) {
-      console.error("Failed to parse response content:", parseError);
-      throw new Error("Invalid response format from OpenAI API");
+      console.error('Failed to parse response content:', parseError);
+      throw new Error('Invalid response format from OpenAI API');
     }
 
     // Check if advices.option is defined and is an array
     if (!advices.option || !Array.isArray(advices.option)) {
-      throw new Error("Invalid response format from OpenAI API");
+      throw new Error('Invalid response format from OpenAI API');
     }
 
     // Function to fetch photo URL and geolocation from Travel Advisor
     const fetchPhotoAndLocation = async (query) => {
       const travelAdvisorOptions = {
-        method: "GET",
-        url: "https://travel-advisor.p.rapidapi.com/locations/v2/auto-complete",
+        method: 'GET',
+        url: 'https://travel-advisor.p.rapidapi.com/locations/v2/auto-complete',
         params: {
           query: query,
-          lang: "en_US",
-          units: "km",
+          lang: 'en_US',
+          units: 'km',
         },
         headers: {
-          "X-RapidAPI-Key": RAPIDAPI_KEY,
-          "X-RapidAPI-Host": "travel-advisor.p.rapidapi.com",
+          'X-RapidAPI-Key': RAPIDAPI_KEY,
+          'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com',
         },
       };
 
       try {
         const travelAdvisorResponse = await axios.request(travelAdvisorOptions);
-        const results =
-          travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
-
+        const results = travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
+        
         // Log results to inspect the structure
         console.log(`Results for query "${query}":`, JSON.stringify(results, null, 2));
 
@@ -106,12 +103,7 @@ app.post("/chat", async (req, res) => {
         if (results.length > 0) {
           const result = results[0];
 
-          if (
-            result.image &&
-            result.image.photo &&
-            result.image.photo.photoSizes &&
-            result.image.photo.photoSizes.length > 0
-          ) {
+          if (result.image && result.image.photo && result.image.photo.photoSizes && result.image.photo.photoSizes.length > 0) {
             photoUrl = result.image.photo.photoSizes[0].url;
           }
 
@@ -124,7 +116,7 @@ app.post("/chat", async (req, res) => {
         console.log(`Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude}`);
         return { photoUrl, latitude, longitude };
       } catch (error) {
-        console.error(Failed to fetch data for query: ${query}, error);
+        console.error(`Failed to fetch data for query: ${query}`, error);
         return { photoUrl: null, latitude: null, longitude: null };
       }
     };
@@ -156,13 +148,13 @@ app.post("/chat", async (req, res) => {
     const fetchWeatherData = async (city, country, days, startDate) => {
       const weatherData = [];
       for (let i = 0; i < days; i++) {
-        const date = moment(startDate).add(i, "days").format("YYYY-MM-DD");
+        const date = moment(startDate).add(i, 'days').format('YYYY-MM-DD');
         const weatherApiOptions = {
-          method: "GET",
-          url: http://api.weatherapi.com/v1/future.json,
+          method: 'GET',
+          url: `http://api.weatherapi.com/v1/future.json`,
           params: {
             key: WEATHER_API_KEY,
-            q: ${city},${country},
+            q: `${city},${country}`,
             dt: date,
           },
         };
@@ -170,12 +162,12 @@ app.post("/chat", async (req, res) => {
         try {
           const weatherApiResponse = await axios.request(weatherApiOptions);
           console.log(
-            Weather API Response Data for ${date}:,
+            `Weather API Response Data for ${date}:`,
             weatherApiResponse.data
           ); // Log the response data for debugging
           const forecast = weatherApiResponse.data.forecast.forecastday[0];
           weatherData.push({
-            [day${i + 1}weather]: {
+            [`day${i + 1}weather`]: {
               date: forecast.date,
               temperature: forecast.day.avgtemp_c,
               weather: forecast.day.condition.text,
@@ -184,7 +176,7 @@ app.post("/chat", async (req, res) => {
           });
         } catch (error) {
           console.error(
-            Failed to fetch weather data for ${city}, ${country} on ${date},
+            `Failed to fetch weather data for ${city}, ${country} on ${date}`,
             error
           );
         }
@@ -206,19 +198,17 @@ app.post("/chat", async (req, res) => {
 
     // Fetch distances and durations from Google Maps Distance Matrix API
     const fetchDistancesAndDurations = async (locations) => {
-      const origins = locations
-        .map((loc) => `${loc.latitude},${loc.longitude}`)
-        .join("|");
-      const destinations = origins; // Since we want all pairwise distances
+      const origins = locations.map(loc => `${loc.latitude},${loc.longitude}`).join('|');
+      const destinations = origins;  // Since we want all pairwise distances
 
       const distanceMatrixOptions = {
-        method: "GET",
-        url: "https://maps.googleapis.com/maps/api/distancematrix/json",
+        method: 'GET',
+        url: 'https://maps.googleapis.com/maps/api/distancematrix/json',
         params: {
           key: GOOGLE_MAPS_API_KEY,
           origins: origins,
           destinations: destinations,
-          mode: "walking", // or 'driving', 'bicycling', etc.
+          mode: 'walking',  // or 'driving', 'bicycling', etc.
         },
       };
 
@@ -241,7 +231,7 @@ app.post("/chat", async (req, res) => {
 
         return distances;
       } catch (error) {
-        console.error("Failed to fetch distances and durations", error);
+        console.error('Failed to fetch distances and durations', error);
         return [];
       }
     };
@@ -249,26 +239,10 @@ app.post("/chat", async (req, res) => {
     // Fetch distances and durations for each option
     for (const option of advices.option) {
       const locations = [
-        {
-          name: option.otel,
-          latitude: option.otelLatitude,
-          longitude: option.otelLongitude,
-        },
-        {
-          name: option.kahve,
-          latitude: option.kahveLatitude,
-          longitude: option.kahveLongitude,
-        },
-        {
-          name: option.restaurant,
-          latitude: option.restaurantLatitude,
-          longitude: option.restaurantLongitude,
-        },
-        {
-          name: option.museum,
-          latitude: option.museumLatitude,
-          longitude: option.museumLongitude,
-        },
+        { name: option.otel, latitude: option.otelLatitude, longitude: option.otelLongitude },
+        { name: option.kahve, latitude: option.kahveLatitude, longitude: option.kahveLongitude },
+        { name: option.restaurant, latitude: option.restaurantLatitude, longitude: option.restaurantLongitude },
+        { name: option.museum, latitude: option.museumLatitude, longitude: option.museumLongitude },
       ];
 
       const distances = await fetchDistancesAndDurations(locations);
@@ -276,22 +250,22 @@ app.post("/chat", async (req, res) => {
     }
 
     console.log(
-      "Final Advices with Photos, Locations, Weather, and Distances:",
+      'Final Advices with Photos, Locations, Weather, and Distances:',
       JSON.stringify(advices, null, 2)
     );
     res.json(advices);
   } catch (error) {
     if (error.response) {
       console.error(
-        API responded with status ${error.response.status}: ${error.response.data.message}
+        `API responded with status ${error.response.status}: ${error.response.data.message}`
       );
     } else {
-      console.error(An error occurred: ${error.message});
+      console.error(`An error occurred: ${error.message}`);
     }
-    res.status(500).json({ error: "An error occurred" });
+    res.status(500).json({ error: 'An error occurred' });
   }
 });
 
 app.listen(port, () => {
-  console.log(Server is running on port ${port});
+  console.log(`Server is running on port ${port}`);
 });
