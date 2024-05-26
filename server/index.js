@@ -4,7 +4,7 @@ const axios = require("axios");
 const moment = require("moment");
 require("dotenv").config();
 const { OpenAI } = require("openai");
-const  passport = require("passport");
+const passport = require("passport");
 const cookieSession = require("cookie-session");
 const passportSetup = require("./passportSetup");
 const authRoute = require("./routes/auth");
@@ -18,16 +18,19 @@ const openai = new OpenAI({
 
 const systemPrompt = process.env.chatText;
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY; 
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_API_KEY; 
 
 app.use(cors());
 app.use(express.json());
 
-app.use(cookieSession({
+app.use(
+  cookieSession({
     name: "session",
     keys: ["cyberwolve"],
     maxAge: 24 * 60 * 60 * 100,
-}));
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -90,10 +93,14 @@ app.post("/chat", async (req, res) => {
 
       try {
         const travelAdvisorResponse = await axios.request(travelAdvisorOptions);
-        const results = travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
-        
+        const results =
+          travelAdvisorResponse.data.data.Typeahead_autocomplete.results;
+
         // Log results to inspect the structure
-        console.log(`Results for query "${query}":`, JSON.stringify(results, null, 2));
+        console.log(
+          `Results for query "${query}":`,
+          JSON.stringify(results, null, 2)
+        );
 
         let photoUrl = null;
         let latitude = null;
@@ -102,7 +109,12 @@ app.post("/chat", async (req, res) => {
         if (results.length > 0) {
           const result = results[0];
 
-          if (result.image && result.image.photo && result.image.photo.photoSizes && result.image.photo.photoSizes.length > 0) {
+          if (
+            result.image &&
+            result.image.photo &&
+            result.image.photo.photoSizes &&
+            result.image.photo.photoSizes.length > 0
+          ) {
             photoUrl = result.image.photo.photoSizes[0].url;
           }
 
@@ -112,7 +124,9 @@ app.post("/chat", async (req, res) => {
           }
         }
 
-        console.log(`Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude}`);
+        console.log(
+          `Query: ${query}, Photo URL: ${photoUrl}, Latitude: ${latitude}, Longitude: ${longitude}`
+        );
         return { photoUrl, latitude, longitude };
       } catch (error) {
         console.error(`Failed to fetch data for query: ${query}`, error);
@@ -195,10 +209,79 @@ app.post("/chat", async (req, res) => {
 
     advices.weather = weatherObject;
 
-    // Fetch photos and locations for each option
+    // Fetch distances and durations from Google Maps Distance Matrix API
+    const fetchDistancesAndDurations = async (locations) => {
+      const origins = locations
+        .map((loc) => `${loc.latitude},${loc.longitude}`)
+        .join("|");
+      const destinations = origins; // Since we want all pairwise distances
+
+      const distanceMatrixOptions = {
+        method: "GET",
+        url: "https://maps.googleapis.com/maps/api/distancematrix/json",
+        params: {
+          key: GOOGLE_MAPS_API_KEY,
+          origins: origins,
+          destinations: destinations,
+          mode: "walking", // or 'driving', 'bicycling', etc.
+        },
+      };
+
+      try {
+        const response = await axios.request(distanceMatrixOptions);
+        const { rows } = response.data;
+
+        const distances = [];
+        for (let i = 0; i < rows.length; i++) {
+          const elements = rows[i].elements;
+          for (let j = 0; j < elements.length; j++) {
+            distances.push({
+              from: locations[i].name,
+              to: locations[j].name,
+              distance: elements[j].distance.text,
+              duration: elements[j].duration.text,
+            });
+          }
+        }
+
+        return distances;
+      } catch (error) {
+        console.error("Failed to fetch distances and durations", error);
+        return [];
+      }
+    };
+
+    // Fetch distances and durations for each option
+    for (const option of advices.option) {
+      const locations = [
+        {
+          name: option.otel,
+          latitude: option.otelLatitude,
+          longitude: option.otelLongitude,
+        },
+        {
+          name: option.kahve,
+          latitude: option.kahveLatitude,
+          longitude: option.kahveLongitude,
+        },
+        {
+          name: option.restaurant,
+          latitude: option.restaurantLatitude,
+          longitude: option.restaurantLongitude,
+        },
+        {
+          name: option.museum,
+          latitude: option.museumLatitude,
+          longitude: option.museumLongitude,
+        },
+      ];
+
+      const distances = await fetchDistancesAndDurations(locations);
+      option.distances = distances;
+    }
 
     console.log(
-      "Final Advices with Photos, Locations, and Weather:",
+      "Final Advices with Photos, Locations, Weather, and Distances:",
       JSON.stringify(advices, null, 2)
     );
     res.json(advices);
