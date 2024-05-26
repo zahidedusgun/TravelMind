@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -7,14 +7,43 @@ import {
   Divider,
   Grid,
   Typography,
+  Button,
+  Modal,
 } from "@mui/material";
-import CardOverflow from "@mui/joy/CardOverflow";
+import { DirectionsWalk, DirectionsCar } from '@mui/icons-material';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Map from "./Map"; // Map bileşenini içe aktarın
+import Map from "./Map";
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '80%',
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};
 
 function Advices({ advices }) {
+  const [open, setOpen] = useState(false);
+  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedDistances, setSelectedDistances] = useState([]);
+
+  const handleOpen = (locations, distances) => {
+    setSelectedLocations(locations);
+    setSelectedDistances(distances);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setSelectedLocations([]);
+    setSelectedDistances([]);
+    setOpen(false);
+  };
+
   const settings = {
     className: "slider variable-width",
     dots: true,
@@ -49,6 +78,10 @@ function Advices({ advices }) {
         onClick={onClick}
       />
     );
+  }
+
+  if (!advices || !advices.option) {
+    return null; // veya bir yükleme göstergesi döndürebilirsiniz
   }
 
   return (
@@ -124,7 +157,7 @@ function Advices({ advices }) {
                                   {option.otelPhotoUrl && (
                                     <img
                                       src={option.otelPhotoUrl}
-                                      alt={Photo of ${option.otel}}
+                                      alt={`Photo of ${option.otel}`}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -145,7 +178,7 @@ function Advices({ advices }) {
                                   {option.kahvePhotoUrl && (
                                     <img
                                       src={option.kahvePhotoUrl}
-                                      alt={Photo of ${option.kahve}}
+                                      alt={`Photo of ${option.kahve}`}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -166,7 +199,7 @@ function Advices({ advices }) {
                                   {option.restaurantPhotoUrl && (
                                     <img
                                       src={option.restaurantPhotoUrl}
-                                      alt={Photo of ${option.restaurant}}
+                                      alt={`Photo of ${option.restaurant}`}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -187,7 +220,7 @@ function Advices({ advices }) {
                                   {option.museumPhotoUrl && (
                                     <img
                                       src={option.museumPhotoUrl}
-                                      alt={Photo of ${option.museum}}
+                                      alt={`Photo of ${option.museum}`}
                                       style={{ width: "100%", height: "auto" }}
                                     />
                                   )}
@@ -218,8 +251,9 @@ function Advices({ advices }) {
               </div>
             }
           </Box>
+          <Button onClick={handleClose}>Kapat</Button>
         </Box>
-      </Grid>
+      </Modal>
     </Box>
   );
 }

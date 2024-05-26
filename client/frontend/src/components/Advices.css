@@ -1,0 +1,18 @@
+.slick-slide {
+  transition: transform 0.5s ease;
+}
+
+.slick-center .card {
+  transform: scale(1.1);
+  z-index: 1;
+}
+
+.slider-item {
+  opacity: 0.5;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.slick-center .slider-item {
+  opacity: 1;
+  transform: scale(1.1);
+}
